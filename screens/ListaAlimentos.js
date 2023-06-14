@@ -56,7 +56,7 @@ const ListaAlimentos = (props) => {
                             <Avatar size={32}
                             rounded
                             title="PW"
-                             containerStyle={{ backgroundColor: "blue" }}
+                             containerStyle={{ backgroundColor: "red" }}
                              />
                             
                             <ListItem.Content>
