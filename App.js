@@ -7,6 +7,10 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import CrearAlimento from './screens/CrearAlimento';
 import ListaAlimentos from './screens/ListaAlimentos';
 import DetallesAlimento from './screens/DetallesAlimento';
+import Login from './screens/Login';
+import Menu from './screens/Menu';
+import Alimento from './screens/Alimento';
+import Inventario from './screens/Inventario';
 
 
 import Convertidora from './calculadora/Convertidora';
@@ -22,10 +26,15 @@ const Stack = createNativeStackNavigator();
 function MyStack() {
   return(
     <Stack.Navigator>
+
       <Stack.Screen name="Lista" component={ListaAlimentos} options={{title:'Alimentos'}}/>
+      <Stack.Screen name="Inventario" component={Inventario} options={{title:'Inventario'}}/>
+      <Stack.Screen name="Login" component={Login} options={{title:'Login'}}/>
+
       <Stack.Screen name="Crear" component={CrearAlimento} options={{title:'Crear nuevo alimento'}}/>
       <Stack.Screen name="Detalle" component={DetallesAlimento} options={{title:'Detalles'}}/>
-      
+      <Stack.Screen name="Alimento" component={Alimento} options={{title:'Alimento'}}/>
+      <Stack.Screen name='Menu' component={Menu} options={{title:'Menú'}}/>
     
     </Stack.Navigator>
   );

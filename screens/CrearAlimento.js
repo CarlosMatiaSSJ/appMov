@@ -1,6 +1,8 @@
 import { useNavigationState } from "@react-navigation/native";
 import React, {useState} from "react";
-import {View, ScrollView, TextInput, Button, StyleSheet} from 'react-native';
+import {Button, Modal, Portal, Text, PaperProvider} from 'react-native-paper';
+import {View, ScrollView, TextInput,  StyleSheet} from 'react-native';
+
 // v9 compat packages are API compatible with v8 code
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
@@ -35,6 +37,8 @@ appId: "1:17731923429:web:f2d120b0b38dd6584f130c"
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
+
+//Se realiza la inserción a la base de datos
 const guardarNuevoAlimento = async() => {
 await db.collection('alimentos').add({
     producto: state.producto,
@@ -49,7 +53,11 @@ await db.collection('alimentos').add({
 
 
 return (
+    
 <ScrollView style={styles.container}>
+    
+
+
     <View style={styles.inputGroup}>
         <TextInput placeholder="Producto" onChangeText={(value)=> handleChangeText('producto', value)}/>
     </View>
@@ -63,7 +71,9 @@ return (
         <TextInput placeholder="Cantidad" onChangeText={(value)=> handleChangeText('cantidad', value)}/>
     </View>
     <View>
-        <Button title="Guardar" onPress={()=> guardarNuevoAlimento()}/>
+    <Button style={{ marginTop: 10, marginBottom: 10 }} theme={{ colors: { primary: '#18009C' } }} mode="contained" onPress={()=> guardarNuevoAlimento()}>
+                Guardar
+            </Button>
     </View>
 </ScrollView>
 

@@ -1,16 +1,16 @@
 import React, {useEffect, useState} from "react";
-import {View, Text, TextInput, Button, ScrollView, StyleSheet, Alert} from 'react-native';
+import {View, Text, TextInput, ScrollView, StyleSheet, Alert} from 'react-native';
+import {Button} from 'react-native-paper';
 // v9 compat packages are API compatible with v8 code
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore'
 import 'firebase/firestore'
-import { ActivityIndicator } from "react-native-web";
+
 
 const DetallesAlimento = (props) =>{
 
-const [loading, setLoading] = useState(true)
-
+//Se inicializa el estado de los input
 const initialState = {
     id:'',
     producto:'',
@@ -28,6 +28,7 @@ storageBucket: "poli-waiter.appspot.com",
 messagingSenderId: "17731923429",
 appId: "1:17731923429:web:f2d120b0b38dd6584f130c"
 };
+//
 const handleChangeText = (name, value) => {
     setAlimento({ ...alimento, [name]: value})
 }
@@ -36,15 +37,9 @@ const eliminarAlimento = async() =>{
     const consulta = db.collection('alimentos').doc(props.route.params.alimentoId);
     await consulta.delete();
     props.navigation.navigate('Lista')
+    alert('Se ha eliminado el producto');
 }
 
-const confirmarEliminar = () =>{
-    Alert.alert('Eliminar Alimento', '¿Seguro que deseas eliminar el alimento?',[
-        {text: 'Si, elimina', onPress:() => eliminarAlimento()},
-        {text: 'No, Cancela', onPress:() => alert('No se ha eliminado')},
-        
-    ])
-}
 
 const actualizarAlimento = async() => {
     const consulta = db.collection('alimentos').doc(alimento.id);
@@ -56,6 +51,7 @@ const actualizarAlimento = async() => {
     })
     setAlimento(initialState)
     props.navigation.navigate('Lista')
+    alert('Se ha editado el alimento!');
 }
 
 firebase.initializeApp(firebaseConfig);
@@ -70,7 +66,7 @@ setAlimento({
     id:doc.id,
 
 })
-setLoading(false)
+
 }
 
 useEffect(()=>{
@@ -80,13 +76,6 @@ getUserById(props.route.params.alimentoId);
 console.log(props.route.params.alimentoId)
 
 
-if(loading){
-    return(
-        <View>
-            <ActivityIndicator size="large" color="#9e9e9e"></ActivityIndicator>
-        </View>
-    )
-}
 return(
 <ScrollView style={styles.container}>
     <View style={styles.inputGroup}>
@@ -102,10 +91,14 @@ return(
         <TextInput placeholder="Cantidad" value={alimento.cantidad} onChangeText={(value)=> handleChangeText('cantidad', value)}/>
     </View>
     <View>
-        <Button color={'#19AC52'}  title="Actualizar Alimento" onPress={()=> actualizarAlimento()}/>
+            <Button style={{ marginTop: 10, marginBottom: 10 }} theme={{ colors: { primary: '#D8B504' } }} mode="contained" onPress={()=> actualizarAlimento()}>
+                Editar Alimento
+            </Button>
     </View>
     <View>
-        <Button color={'#E37399'} title="Eliminar Alimento" onPress={()=> eliminarAlimento()}/>
+            <Button style={{ marginTop: 10, marginBottom: 10 }} theme={{ colors: { primary: '#CB0000' } }} mode="contained" onPress={()=> eliminarAlimento()}>
+                Eliminar Alimento
+            </Button>
     </View>
 </ScrollView>
 )
