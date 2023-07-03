@@ -24,9 +24,6 @@ const Inventario = () =>{
     firebase.initializeApp(firebaseConfig);
     //Instancia de FireStore
     const db = firebase.firestore();
-
-
-
     const [alimentos, setAlimentos] = useState([]);
 
     useEffect(() => {
@@ -34,7 +31,6 @@ const Inventario = () =>{
   
       // Realizar consulta a la colección "alimentos"
       db.collection('alimentos')
-       
         .get()
         .then((querySnapshot) => {
           // Crear un array para almacenar los alimentos
