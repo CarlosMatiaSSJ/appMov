@@ -26,69 +26,49 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const [alimentos, setAlimentos] = useState([]);
 
+useEffect(() => {
+     
+  
+  // Realizar consulta a la colección "alimentos"
+  db.collection('alimentos')
+    .get()
+    .then((querySnapshot) => {
+      // Crear un array para almacenar los alimentos
+      const alimentosData = [];
+      // Recorrer los documentos de la consulta
+      querySnapshot.forEach((doc) => {
+        // Obtener los datos de cada documento
+        const alimento = doc.data();
+        // Agregar el alimento al array
+        alimentosData.push(alimento);
+      });
+      // Actualizar el estado con los alimentos recuperados
+      setAlimentos(alimentosData);
+    })
+    .catch((error) => {
+      // Manejar el error
+      console.log('Error al obtener los alimentos:', error);
+    });
+}, []);
+
     return(
         <ScrollView>
         <View>
+        {alimentos.map((alimento, index) => (
             <Card style={{ marginTop: 10, marginBottom: 10, backgroundColor:'#D0DDEF' }} mode="contained" theme={{colors : {primary: '#180009C'}}}>
     <Card.Content>
-      <Text variant="titleLarge">Hamburguesa</Text>
-      <Text variant="bodyMedium">Hamburguesa Hawaiana</Text>
+      <Text variant="titleLarge">{alimento.producto}</Text>
+      <Text variant="bodyMedium">{alimento.descripcion}</Text>
     </Card.Content>
-    <Card.Cover source={{ uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/NCI_Visuals_Food_Hamburger.jpg/640px-NCI_Visuals_Food_Hamburger.jpg' }} />
+    <Card.Cover source={{ uri: alimento.imageUrl }} />
     <Card.Actions>
-      <Button theme={{ colors: { primary: '#18009C' } }} onPress={() => props.navigation.navigate('Alimento')}>Ver</Button>
+      <Button theme={{ colors: { primary: '#18009C' } }} onPress={() => props.navigation.navigate('Alimento', {alimentoDescripcion: alimento.descripcion})}>Ver</Button>
       <Button theme={{ colors: { primary: '#18009C' } }}>Agregar al carrito</Button>
     </Card.Actions>
   </Card>    
+        ))}
         </View>
-
-        <View>
-            <Card style={{ marginTop: 10, marginBottom: 10, backgroundColor:'#D0DDEF' }} mode="contained">
-    <Card.Content>
-      <Text variant="titleLarge">Torta</Text>
-      <Text variant="bodyMedium">Torta de huevo</Text>
-    </Card.Content>
-    <Card.Cover source={{ uri: 'https://www.cocinavital.mx/wp-content/uploads/2020/10/torta-de-huevo.jpg' }} />
-    <Card.Actions>
-      <Button theme={{ colors: { primary: '#18009C' } }}>Ver</Button>
-      <Button theme={{ colors: { primary: '#18009C' } }}>Agregar al carrito</Button>
-    </Card.Actions>
-  </Card>    
-        </View>
-
-        <View>
-            <Card style={{ marginTop: 10, marginBottom: 10, backgroundColor:'#D0DDEF' }} mode="contained">
-    <Card.Content>
-      <Text variant="titleLarge">Aguas</Text>
-      <Text variant="bodyMedium">Agua de Jamaica</Text>
-    </Card.Content>
-    <Card.Cover source={{ uri: 'https://assets.tmecosys.com/image/upload/t_web767x639/img/recipe/ras/Assets/F34BC251-8877-40BD-BBEF-ADDD34D15543/Derivates/A86DA7B6-65EB-4512-A719-085699EF7072.jpg' }} />
-    <Card.Actions>
-      <Button theme={{ colors: { primary: '#18009C' } }}>Ver</Button>
-      <Button theme={{ colors: { primary: '#18009C' } }}>Agregar al carrito</Button>
-    </Card.Actions>
-  </Card>    
-        </View>
-
-        <View>
-            <Card style={{ marginTop: 10, marginBottom: 10, backgroundColor:'#D0DDEF' }} mode="contained">
-    <Card.Content>
-      <Text variant="titleLarge">Burrito</Text>
-      <Text variant="bodyMedium">Burrito de milanesa</Text>
-    </Card.Content>
-    <Card.Cover source={{ uri: 'https://picsum.photos/700' }} />
-    <Card.Actions>
-      <Button theme={{ colors: { primary: '#18009C' } }}>Ver</Button>
-      <Button theme={{ colors: { primary: '#18009C' } }}>Agregar al carrito</Button>
-    </Card.Actions>
-  </Card>    
-        </View>
-
-
-        
-        
-
-     </ScrollView>
+        </ScrollView>
 
        
 
