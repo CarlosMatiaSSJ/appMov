@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import { Modal, Portal, Text, Button, PaperProvider, Divider, Avatar, Card} from 'react-native-paper';
+import { Modal, Portal, Text, Button, FAB, Divider, Avatar, Card} from 'react-native-paper';
 import {View, TextInput, ScrollView, StyleSheet} from 'react-native';
 import { ListItem } from 'react-native-elements';
 // v9 compat packages are API compatible with v8 code3
@@ -26,6 +26,10 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const [alimentos, setAlimentos] = useState([]);
 const [carrito, setCarrito] = useState([]);
+const [isCartVisible, setIsCartVisible] = useState(false);
+
+
+
 
 useEffect(() => {
   db.collection('alimentos')
@@ -50,48 +54,71 @@ const agregarAlimentoAlCarrito = (alimento) => {
     descripcion,
     precioVenta,
   };
+  setIsCartVisible(true);
   setCarrito([...carrito, nuevoItem]);
   alert('Producto Agregado al carrito')
 };
 
+const handleCartPress = () => {
+  console.log(carrito);
+};
+
 return (
-  <ScrollView>
-    <View>
-      {alimentos.map((alimento, index) => (
-        <Card
-          key={index}
-          style={{ marginTop: 10, marginBottom: 10, backgroundColor: '#D0DDEF' }}
-          mode="contained"
-          theme={{ colors: { primary: '#180009C' } }}
-        >
-          <Card.Content>
-            <Text variant="titleLarge">{alimento.producto}</Text>
-            <Text variant="bodyMedium">{alimento.descripcion}</Text>
-          </Card.Content>
-          <Card.Cover source={{ uri: alimento.imageUrl }} />
-          <Card.Actions>
-            <Button
-              theme={{ colors: { primary: '#18009C' } }}
-              onPress={() =>
-                props.navigation.navigate('Alimento', { alimentoDescripcion: alimento.descripcion })
-              }
-            >
-              Ver
-            </Button>
-            <Button
-              theme={{ colors: { primary: '#18009C' } }}
-              onPress={() => agregarAlimentoAlCarrito(alimento)}
-            >
-              Agregar al carrito
-            </Button>
-          </Card.Actions>
-        </Card>
-      ))}
-    </View>
-    {carrito.length > 0 && (
-      <Button onPress={() => console.log(carrito)}>Ver carrito</Button>
+  <>
+    <ScrollView>
+      <View>
+        {alimentos.map((alimento, index) => (
+          <Card
+            key={index}
+            style={{ marginTop: 10, marginBottom: 10, backgroundColor: '#D0DDEF' }}
+            mode="contained"
+            theme={{ colors: { primary: '#180009C' } }}
+          >
+            <Card.Content>
+              <Text variant="titleLarge">{alimento.producto}</Text>
+              <Text variant="bodyMedium">{alimento.descripcion}</Text>
+            </Card.Content>
+            <Card.Cover source={{ uri: alimento.imageUrl }} />
+            <Card.Actions>
+              <Button
+                theme={{ colors: { primary: '#18009C' } }}
+                onPress={() =>
+                  props.navigation.navigate('Alimento', { alimentoDescripcion: alimento.descripcion })
+                }
+              >
+                Ver
+              </Button>
+              <Button
+                theme={{ colors: { primary: '#18009C' } }}
+                onPress={() => agregarAlimentoAlCarrito(alimento)}
+              >
+                Agregar al carrito
+              </Button>
+            </Card.Actions>
+          </Card>
+        ))}
+      </View>
+    </ScrollView>
+    {isCartVisible && (
+      <FAB
+        style={styles.fab}
+        icon="cart"
+        onPress={handleCartPress}
+        color="white"
+      />
     )}
-  </ScrollView>
+  </>
 );
-}
+};
+const styles = StyleSheet.create({
+  fab: {
+    position: 'absolute',
+    margin: 16,
+    right: 0,
+    bottom: 0,
+    backgroundColor: '#18009C',
+   
+  },
+});
+
 export default Menu
