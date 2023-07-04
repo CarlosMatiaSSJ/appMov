@@ -25,56 +25,73 @@ firebase.initializeApp(firebaseConfig);
 //Instancia de FireStore
 const db = firebase.firestore();
 const [alimentos, setAlimentos] = useState([]);
+const [carrito, setCarrito] = useState([]);
 
 useEffect(() => {
-     
-  
-  // Realizar consulta a la colección "alimentos"
   db.collection('alimentos')
     .get()
     .then((querySnapshot) => {
-      // Crear un array para almacenar los alimentos
       const alimentosData = [];
-      // Recorrer los documentos de la consulta
       querySnapshot.forEach((doc) => {
-        // Obtener los datos de cada documento
         const alimento = doc.data();
-        // Agregar el alimento al array
         alimentosData.push(alimento);
       });
-      // Actualizar el estado con los alimentos recuperados
       setAlimentos(alimentosData);
     })
     .catch((error) => {
-      // Manejar el error
       console.log('Error al obtener los alimentos:', error);
     });
 }, []);
 
-    return(
-        <ScrollView>
-        <View>
-        {alimentos.map((alimento, index) => (
-            <Card style={{ marginTop: 10, marginBottom: 10, backgroundColor:'#D0DDEF' }} mode="contained" theme={{colors : {primary: '#180009C'}}}>
-    <Card.Content>
-      <Text variant="titleLarge">{alimento.producto}</Text>
-      <Text variant="bodyMedium">{alimento.descripcion}</Text>
-    </Card.Content>
-    <Card.Cover source={{ uri: alimento.imageUrl }} />
-    <Card.Actions>
-      <Button theme={{ colors: { primary: '#18009C' } }} onPress={() => props.navigation.navigate('Alimento', {alimentoDescripcion: alimento.descripcion})}>Ver</Button>
-      <Button theme={{ colors: { primary: '#18009C' } }}>Agregar al carrito</Button>
-    </Card.Actions>
-  </Card>    
-        ))}
-        </View>
-        </ScrollView>
+const agregarAlimentoAlCarrito = (alimento) => {
+  const { producto, descripcion, precioVenta } = alimento;
+  const nuevoItem = {
+    producto,
+    descripcion,
+    precioVenta,
+  };
+  setCarrito([...carrito, nuevoItem]);
+  alert('Producto Agregado al carrito')
+};
 
-       
-
-
-    
-  
-    );
+return (
+  <ScrollView>
+    <View>
+      {alimentos.map((alimento, index) => (
+        <Card
+          key={index}
+          style={{ marginTop: 10, marginBottom: 10, backgroundColor: '#D0DDEF' }}
+          mode="contained"
+          theme={{ colors: { primary: '#180009C' } }}
+        >
+          <Card.Content>
+            <Text variant="titleLarge">{alimento.producto}</Text>
+            <Text variant="bodyMedium">{alimento.descripcion}</Text>
+          </Card.Content>
+          <Card.Cover source={{ uri: alimento.imageUrl }} />
+          <Card.Actions>
+            <Button
+              theme={{ colors: { primary: '#18009C' } }}
+              onPress={() =>
+                props.navigation.navigate('Alimento', { alimentoDescripcion: alimento.descripcion })
+              }
+            >
+              Ver
+            </Button>
+            <Button
+              theme={{ colors: { primary: '#18009C' } }}
+              onPress={() => agregarAlimentoAlCarrito(alimento)}
+            >
+              Agregar al carrito
+            </Button>
+          </Card.Actions>
+        </Card>
+      ))}
+    </View>
+    {carrito.length > 0 && (
+      <Button onPress={() => console.log(carrito)}>Ver carrito</Button>
+    )}
+  </ScrollView>
+);
 }
 export default Menu
