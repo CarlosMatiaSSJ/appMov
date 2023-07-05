@@ -11,6 +11,7 @@ import Login from './screens/Login';
 import Menu from './screens/Menu';
 import Alimento from './screens/Alimento';
 import Inventario from './screens/Inventario';
+import QuejasySugerencia from './screens/QuejasySugerencias';
 
 
 import Convertidora from './calculadora/Convertidora';
@@ -27,6 +28,7 @@ function MyStack() {
   return(
     <Stack.Navigator>
 
+      <Stack.Screen name="QyS" component={QuejasySugerencia} options={{title:'Quejas'}}/>
       <Stack.Screen name="Lista" component={ListaAlimentos} options={{title:'Alimentos'}}/>
       <Stack.Screen name="Inventario" component={Inventario} options={{title:'Inventario'}}/>
       <Stack.Screen name="Login" component={Login} options={{title:'Login'}}/>

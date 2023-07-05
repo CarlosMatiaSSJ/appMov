@@ -11,10 +11,6 @@ import { QuerySnapshot } from "firebase/firestore";
 import ImagePicker from 'react-native-image-picker';
 
 
-
-
-
-
 const ListaAlimentos = (props) => {
     //Firebase config
     const firebaseConfig = {
