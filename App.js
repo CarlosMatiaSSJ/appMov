@@ -12,16 +12,6 @@ import Menu from './screens/Menu';
 import Alimento from './screens/Alimento';
 import Inventario from './screens/Inventario';
 
-
-
-import Convertidora from './calculadora/Convertidora';
-import CelciusFarenheit from './calculadora/CelciusFarenheit';
-import KmMilla from './calculadora/KmMilla'
-import MetrosPies from './calculadora/MetrosPies'
-import MetrosPulgada from './calculadora/MetrosPulgada'
-import PesosDolares from './calculadora/PesosDolares'
-
-
 const Stack = createNativeStackNavigator();
 
 function MyStack() {
