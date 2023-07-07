@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import {
   Modal,
   Portal,
@@ -18,8 +18,11 @@ import "firebase/compat/firestore";
 import "firebase/firestore";
 import { QuerySnapshot } from "firebase/firestore";
 import ImagePicker from "react-native-image-picker";
+import CartContext from "./CartProvider";
 
-const Inventario = () => {
+const Carrito = () => {
+  const { cartItems } = useContext(CartContext);
+
   //Firebase config
   const firebaseConfig = {
     apiKey: "AIzaSyDqVK-WWN_J_Lfl8aLVBX-4RM-1E_auMMw",
@@ -58,25 +61,37 @@ const Inventario = () => {
       });
   }, []);
 
+  // Calcula el total del carrito sumando los precios de los items
+  const calcularTotal = () => {
+    let total = 0;
+    cartItems.forEach((item) => {
+      total += Number(item.precioVenta);
+    });
+    return total;
+  };
+
   return (
     <View style={styles.container}>
       <DataTable style={{ backgroundColor: "#CDDDF1" }}>
         <DataTable.Header>
           <DataTable.Title>Producto</DataTable.Title>
           <DataTable.Title>Descripción</DataTable.Title>
-          <DataTable.Title numeric>Precio de Venta</DataTable.Title>
-          <DataTable.Title numeric>Cantidad</DataTable.Title>
+          <DataTable.Title>Precio</DataTable.Title>
         </DataTable.Header>
 
-        {alimentos.map((alimento, index) => (
+        {cartItems.map((item, index) => (
           <DataTable.Row key={index}>
-            <DataTable.Cell>{alimento.producto}</DataTable.Cell>
-            <DataTable.Cell>{alimento.descripcion}</DataTable.Cell>
-            <DataTable.Cell numeric>{alimento.precioVenta}</DataTable.Cell>
-            <DataTable.Cell numeric>{alimento.cantidad}</DataTable.Cell>
+            <DataTable.Cell>{item.producto}</DataTable.Cell>
+            <DataTable.Cell>{item.descripcion}</DataTable.Cell>
+            <DataTable.Cell>${item.precioVenta}</DataTable.Cell>
           </DataTable.Row>
         ))}
+        <DataTable.Row>
+          <DataTable.Cell>TOTAL: </DataTable.Cell>
+          <DataTable.Cell>${calcularTotal()} </DataTable.Cell>
+        </DataTable.Row>
       </DataTable>
+
     </View>
   );
 };
@@ -87,4 +102,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Inventario;
+export default Carrito;
