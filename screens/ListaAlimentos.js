@@ -41,9 +41,9 @@ const ListaAlimentos = (props) => {
   
     const [selectedImage, setSelectedImage] = useState(null);
         // Función para abrir el selector de imágenes
-  const openImagePicker = () => {
-    console.log(ImagePicker);
-  };
+   const openImagePicker = () => {
+     console.log(ImagePicker);
+   };
 
     //Se realiza la inserción
     const guardarNuevoAlimento = async () => {

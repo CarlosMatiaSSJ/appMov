@@ -52,7 +52,7 @@ const QuejasySugerencia = () => {
 
       <View style={styles.containerl}>
         <Image
-          source={require('./imgs/QS.png')}
+          source={require('../imgs/logoAzul.png')}
           style={styles.image}
         /> 
 

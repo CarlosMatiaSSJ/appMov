@@ -3,7 +3,9 @@ import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer} from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-//Importación de componentes 
+//Importación de componentes
+
+import Index from './screens/Index';
 import CrearAlimento from './screens/CrearAlimento';
 import ListaAlimentos from './screens/ListaAlimentos';
 import DetallesAlimento from './screens/DetallesAlimento';
@@ -12,6 +14,7 @@ import Menu from './screens/Menu';
 import Alimento from './screens/Alimento';
 import Inventario from './screens/Inventario';
 import QuejasySugerencia from './screens/QuejasySugerencias';
+
 
 
 import Convertidora from './calculadora/Convertidora';
@@ -27,7 +30,7 @@ const Stack = createNativeStackNavigator();
 function MyStack() {
   return(
     <Stack.Navigator>
-
+      <Stack.Screen name="Index" component={Index} options={{title:'Index'}}/>
       <Stack.Screen name="QyS" component={QuejasySugerencia} options={{title:'Quejas'}}/>
       <Stack.Screen name="Lista" component={ListaAlimentos} options={{title:'Alimentos'}}/>
       <Stack.Screen name="Inventario" component={Inventario} options={{title:'Inventario'}}/>
