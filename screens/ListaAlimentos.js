@@ -1,19 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import { Text, Button, PaperProvider, Menu, Divider } from 'react-native-paper';
+import { Button, Menu } from 'react-native-paper';
 import {
   View,
   Modal,
   TextInput,
-  ScrollView,
   StyleSheet,
   Pressable,
   TouchableOpacity,
+  VirtualizedList,
+  Text,
+  Image,
 } from 'react-native';
-import { ListItem, Avatar, Icon } from 'react-native-elements';
-import ImagePicker from 'react-native-image-picker';
+import 'firebase/compat/storage';
+import firebase from 'firebase/compat/app';
+import { Icon } from 'react-native-elements';
+import * as ImagePicker from 'expo-image-picker';
 import db from '../database/firebase';
-import { VirtualizedList } from 'react-native-web';
-
+const storage = firebase.storage();
 const ListaAlimentos = (props) => {
   //Se obtienen los datos del formulario
   const [state, setState] = useState({
@@ -29,39 +32,87 @@ const ListaAlimentos = (props) => {
 
   const [selectedImage, setSelectedImage] = useState(null);
   // Función para abrir el selector de imágenes
-  const openImagePicker = () => {
-    console.log(ImagePicker);
-  };
-
-  //Se realiza la inserción
-  const guardarNuevoAlimento = async () => {
-    // Verificar si ya existe un alimento con la misma descripción
-    const alimentosRef = db.collection('alimentos');
-    const querySnapshot = await alimentosRef
-      .where('descripcion', '==', state.descripcion)
-      .get();
-
-    if (!querySnapshot.empty) {
-      // Si se encuentra un alimento con la misma descripción, mostrar un mensaje de error
-      alert(
-        'La descripción del producto ya existe. Por favor, ingresa una descripción diferente.'
-      );
+  const selectImage = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      alert('Permiso de acceso a la galería de fotos denegado');
       return;
     }
+    const result = await ImagePicker.launchImageLibraryAsync();
 
-    // Si no se encuentra un alimento con la misma descripción, agregar el nuevo alimento
-    await alimentosRef.add({
-      producto: state.producto,
-      descripcion: state.descripcion,
-      precioVenta: state.precioVenta,
-      cantidad: state.cantidad,
-    });
-
-    alert('Producto agregado exitosamente!');
-    hideModal();
-    props.navigation.navigate('Lista');
+    if (!result.cancelled) {
+      // La imagen fue seleccionada exitosamente
+      const imageUri = result.uri;
+      setSelectedImage(imageUri);
+    }
   };
 
+  // Función para guardar la imagen en Firestore
+  const saveImageToFirestore = async (imageUri) => {
+    try {
+      const response = await fetch(imageUri);
+      const blob = await response.blob();
+
+      // Generar un nombre único para la imagen
+      const imageName = `${Date.now()}.jpg`;
+
+      // Referencia al storage de Firebase donde se guardará la imagen
+      const storageRef = storage.ref().child(`images/${imageName}`);
+
+      // Subir la imagen al storage
+      await storageRef.put(blob);
+
+      // Obtener la URL de descarga de la imagen
+      const imageUrl = await storageRef.getDownloadURL();
+
+      return imageUrl;
+    } catch (error) {
+      console.error('Error al guardar la imagen:', error);
+      throw error;
+    }
+  };
+
+  // Función para guardar los datos en Firestore
+  const saveData = async () => {
+    try {
+      // Verificar si ya existe un alimento con la misma descripción
+      const alimentosRef = db.collection('alimentos');
+      const querySnapshot = await alimentosRef
+        .where('descripcion', '==', state.descripcion)
+        .get();
+
+      if (!querySnapshot.empty) {
+        // Si se encuentra un alimento con la misma descripción, mostrar un mensaje de error
+        alert(
+          'La descripción del producto ya existe. Por favor, ingresa una descripción diferente.'
+        );
+        return;
+      }
+
+      // Si no se encuentra un alimento con la misma descripción, guardar los datos
+      const imageUrl = selectedImage
+        ? await saveImageToFirestore(selectedImage)
+        : null;
+
+      await alimentosRef.add({
+        producto: state.producto,
+        descripcion: state.descripcion,
+        precioVenta: state.precioVenta,
+        cantidad: state.cantidad,
+        imageUrl: imageUrl,
+      });
+
+      alert('Producto agregado exitosamente!');
+      hideModal();
+      setSelectedImage(null);
+      props.navigation.navigate('Lista');
+    } catch (error) {
+      console.error('Error al guardar los datos:', error);
+      alert(
+        'Ocurrió un error al guardar los datos. Por favor, inténtalo nuevamente.'
+      );
+    }
+  };
   const [alimentos, setAlimentos] = useState([]);
 
   useEffect(() => {
@@ -125,7 +176,7 @@ const ListaAlimentos = (props) => {
   );
 
   return (
-    <PaperProvider>
+    <View>
       <Modal
         animationType='fade'
         transparent={true}
@@ -177,7 +228,7 @@ const ListaAlimentos = (props) => {
                 theme={{ colors: { primary: 'black' } }}
                 mode='contained-tonal'
                 title='Seleccionar Imagen'
-                onPress={openImagePicker}
+                onPress={selectImage}
               >
                 Subir imagen
               </Button>
@@ -192,7 +243,7 @@ const ListaAlimentos = (props) => {
                 }}
                 theme={{ colors: { primary: 'black' } }}
                 mode='contained-tonal'
-                onPress={() => guardarNuevoAlimento()}
+                onPress={() => saveData()} // Agrega los paréntesis para llamar a la función
               >
                 Guardar
               </Button>
@@ -246,7 +297,7 @@ const ListaAlimentos = (props) => {
           ></Menu>
         </View>
       </View>
-    </PaperProvider>
+    </View>
   );
 };
 
@@ -277,10 +328,10 @@ const styles = StyleSheet.create({
   textInput: {
     marginBottom: 15,
     borderBottomWidth: 1,
-    borderBottomColor: '#000',
+    borderBottomColor: '#809BAD',
     paddingVertical: 5,
     paddingHorizontal: 10,
-    color: '#000',
+    color: '#FFF',
   },
   buttonMenu: {
     borderRadius: 10,
