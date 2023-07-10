@@ -43,7 +43,7 @@ const Menu = (props) => {
       .then((querySnapshot) => {
         const alimentosData = [];
         querySnapshot.forEach((doc) => {
-          const alimento = doc.data();
+          const alimento = { ...doc.data(), id: doc.id }; // Copiar el campo "id" del documento en el objeto alimento
           alimentosData.push(alimento);
         });
         setAlimentos(alimentosData);
@@ -52,19 +52,23 @@ const Menu = (props) => {
         console.log("Error al obtener los alimentos:", error);
       });
   }, []);
+  
+  
 
   //Agregar producto al carrito de compras
   const agregarAlimentoAlCarrito = (alimento) => {
-    const { producto, descripcion, precioVenta } = alimento;
+    const { id, producto, descripcion, precioVenta } = alimento; 
     const nuevoItem = {
+      id, 
       producto,
       descripcion,
       precioVenta,
     };
     setIsCartVisible(true);
     addToCart(nuevoItem);
-    alert("Producto Agregado al carrito");
+    alert('Producto Agregado al carrito');
   };
+  
   
 
 
