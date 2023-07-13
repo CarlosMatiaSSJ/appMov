@@ -176,7 +176,7 @@ const ListaAlimentos = (props) => {
   );
 
   return (
-    <View>
+    <View style={styles.principalView}>
       <Modal
         animationType='fade'
         transparent={true}
@@ -267,10 +267,8 @@ const ListaAlimentos = (props) => {
         getItemCount={() => alimentos.length}
         getItem={getItem}
       />
-
       <View
         style={{
-          paddingTop: 0,
           flexDirection: 'row',
           justifyContent: 'center',
         }}
@@ -278,10 +276,7 @@ const ListaAlimentos = (props) => {
         <View style={styles.buttonMenu}>
           <Menu
             anchor={
-              <Button
-                mode='outlined'
-                onPress={() => props.navigation.navigate('Menu')}
-              >
+              <Button onPress={() => props.navigation.navigate('Menu')}>
                 Mostrar Menú
               </Button>
             }
@@ -302,6 +297,10 @@ const ListaAlimentos = (props) => {
 };
 
 const styles = StyleSheet.create({
+  principalView: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
   centeredView: {
     flex: 1,
     justifyContent: 'center',
@@ -331,7 +330,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#809BAD',
     paddingVertical: 5,
     paddingHorizontal: 10,
-    color: '#FFF',
+    color: '#000',
   },
   buttonMenu: {
     borderRadius: 10,
