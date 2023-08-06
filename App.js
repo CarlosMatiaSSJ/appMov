@@ -13,6 +13,7 @@ import Menu from "./screens/Menu";
 import Alimento from "./screens/Alimento";
 import Inventario from "./screens/Inventario";
 import Carrito from "./screens/Carrito";
+import Payment from "./screens/Payment";
 
 const Stack = createNativeStackNavigator();
 
@@ -20,11 +21,17 @@ function MyStack() {
   return (
     <CartProvider>
       <Stack.Navigator>
-        <Stack.Screen
+      <Stack.Screen
+          name="Payment"
+          component={Payment}
+          options={{ title: "Payment" }}
+        />
+      <Stack.Screen
           name="Lista"
           component={ListaAlimentos}
           options={{ title: "Alimentos" }}
         />
+
         <Stack.Screen
           name="Inventario"
           component={Inventario}
