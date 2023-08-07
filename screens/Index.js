@@ -47,50 +47,100 @@ const Index = () => {
         </Text>
       </View>
 
-      <View style={[styles.suggestionsContainer, { flex: 0.9 }]}>
-        <Text style={styles.suggestionsTitle}>Sugerencias</Text>
+      <View style={styles.suggestionsContainer}>
+        <Text style={styles.suggestionsTitle}>Recomendaciones</Text>
 
+        {/* First row of cards */}
         <View style={styles.cardsContainer}>
-          <TouchableWithoutFeedback
-            onPressIn={handleMouseEnter}
-            onPressOut={handleMouseLeave}
-          >
-            <View style={[styles.card, highlighted && styles.cardHighlighted]}>
-              <Image
-                source={require('../imgs/logoAzul.png')}
-                style={[styles.cardImage, { width: '90%', height: '90%' }]}
-              />
-              <Text style={styles.cardDescription}>Hot-Dogs</Text>
-            </View>
-          </TouchableWithoutFeedback>
+          <View style={styles.cardsRow}>
+            <TouchableWithoutFeedback
+              onPressIn={handleMouseEnter}
+              onPressOut={handleMouseLeave}
+            >
+              <View style={[styles.card, highlighted && styles.cardHighlighted]}>
+                <Image
+                  source={require('../imgs/logoAzul.png')}
+                  style={[styles.cardImage, { width: '90%', height: '90%' }]}
+                />
+                <Text style={styles.cardDescription}>Hot-Dogs</Text>
+              </View>
+            </TouchableWithoutFeedback>
 
-          <TouchableWithoutFeedback
-            onPressIn={handleMouseEnter}
-            onPressOut={handleMouseLeave}
-          >
-            <View style={[styles.card, highlighted && styles.cardHighlighted]}>
-              <Image
-                source={require('../imgs/logoAzul.png')}
-                style={[styles.cardImage, { width: '90%', height: '90%' }]}
-              />
-              <Text style={styles.cardDescription}>Tacos</Text>
-            </View>
-          </TouchableWithoutFeedback>
+            <TouchableWithoutFeedback
+              onPressIn={handleMouseEnter}
+              onPressOut={handleMouseLeave}
+            >
+              <View style={[styles.card, highlighted && styles.cardHighlighted]}>
+                <Image
+                  source={require('../imgs/logoAzul.png')}
+                  style={[styles.cardImage, { width: '90%', height: '90%' }]}
+                />
+                <Text style={styles.cardDescription}>Tacos</Text>
+              </View>
+            </TouchableWithoutFeedback>
 
-          <TouchableWithoutFeedback
-            onPressIn={handleMouseEnter}
-            onPressOut={handleMouseLeave}
-          >
+            <TouchableWithoutFeedback
+              onPressIn={handleMouseEnter}
+              onPressOut={handleMouseLeave}
+            >
+              <View style={[styles.card, highlighted && styles.cardHighlighted]}>
+                <Image
+                  source={require('../imgs/logoAzul.png')}
+                  style={[styles.cardImage, { width: '90%', height: '90%' }]}
+                />
+                <Text style={styles.cardDescription}>Burritos</Text>
+              </View>
+            </TouchableWithoutFeedback>
+          </View>
+        </View>
+
+        {/* Second row of cards */}
+        <View style={styles.cardsContainer}>
+        <View style={styles.suggestionsContainer}>
+        <Text style={styles.suggestionsTitle}>Vistas</Text>
+          <View style={styles.cardsRow}>
             <View style={[styles.card, highlighted && styles.cardHighlighted]}>
+              <Text style={styles.cardDescription}>Carrito</Text>
               <Image
-                source={require('../imgs/logoAzul.png')}
-                style={[styles.cardImage, { width: '90%', height: '90%' }]}
+                source={require('../imgs/logoAzul.png')} // Replace with the actual image path
+                style={styles.cardImage}
               />
-              <Text style={styles.cardDescription}>Burritos</Text>
+              <TouchableWithoutFeedback onPress={() => alert('Botón 1 presionado')}>
+                <View>
+                  <Text>Botón 1</Text>
+                </View>
+              </TouchableWithoutFeedback>
             </View>
-          </TouchableWithoutFeedback>
+
+            <View style={[styles.card, highlighted && styles.cardHighlighted]}>
+              <Text style={styles.cardDescription}>Menú</Text>
+              <Image
+                source={require('../imgs/logoAzul.png')} // Replace with the actual image path
+                style={styles.cardImage}
+              />
+              <TouchableWithoutFeedback onPress={() => alert('Botón 2 presionado')}>
+                <View>
+                  <Text>Botón 2</Text>
+                </View>
+              </TouchableWithoutFeedback>
+            </View>
+
+            <View style={[styles.card, highlighted && styles.cardHighlighted]}>
+              <Text style={styles.cardDescription}>Inicio</Text>
+              <Image
+                source={require('../imgs/logoAzul.png')} // Replace with the actual image path
+                style={styles.cardImage}
+              />
+              <TouchableWithoutFeedback onPress={() => alert('Botón 3 presionado')}>
+                <View>
+                  <Text>Botón 3</Text>
+                </View>
+              </TouchableWithoutFeedback>
+            </View>
+          </View>
         </View>
       </View>
+    </View>
     </View>
   );
 };
@@ -101,6 +151,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'gray',
+  },
+  cardsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 10,
   },
   nameContainer: {
     marginBottom: 10,
