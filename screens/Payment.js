@@ -1,6 +1,7 @@
   import React, { useState } from 'react';
   import { View, Button, Text } from 'react-native';
   import { StripeProvider, CardField, useStripe } from '@stripe/stripe-react-native';
+  import axios from 'axios';
 
   const Payment = (props) => {
     const [cardNumber, setCardNumber] = useState('');
@@ -12,17 +13,12 @@
 
     const handlePayment = async () => {
       try {
-        const paymentMethod = await confirmPayment({
-          type: 'Card',
-          card: {
-            number: cardNumber ?? '', // Establecer un valor predeterminado si cardNumber es undefined
-            expMonth: parseInt(expMonth),
-            expYear: parseInt(expYear),
-            cvc: cvc,
-          },
-          amount: 123, // Total en centavos 
-          currency: 'mxn', // Divisa 
+        const response = await axios.post('http://localhost:3000/procesar-pago', {
+          token: 'tok_visa', // El token de la tarjeta generado por Stripe en el frontend
+          amount: 1000, // Total en centavos (ejemplo: $10.00)
+          currency: 'mxn', // Divisa
         });
+  
         // Pago exitoso
         alert('Pago realizado');
         props.navigation.navigate('Lista');
