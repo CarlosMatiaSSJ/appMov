@@ -1,19 +1,19 @@
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { CartProvider } from "./screens/CartProvider";
+import { StatusBar } from 'expo-status-bar';
+import { StyleSheet, Text, View } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { CartProvider } from './screens/CartProvider';
 
 //Importación de componentes
-import CrearAlimento from "./screens/CrearAlimento";
-import ListaAlimentos from "./screens/ListaAlimentos";
-import DetallesAlimento from "./screens/DetallesAlimento";
-import Login from "./screens/Login";
-import Menu from "./screens/Menu";
-import Alimento from "./screens/Alimento";
-import Inventario from "./screens/Inventario";
-import Carrito from "./screens/Carrito";
-import Payment from "./screens/Payment";
+import CrearAlimento from './screens/CrearAlimento';
+import ListaAlimentos from './screens/ListaAlimentos';
+import DetallesAlimento from './screens/DetallesAlimento';
+import Login from './screens/Login';
+import Menu from './screens/Menu';
+import Alimento from './screens/Alimento';
+import Inventario from './screens/Inventario';
+import Carrito from './screens/Carrito';
+import Payment from './screens/Payment';
 
 const Stack = createNativeStackNavigator();
 
@@ -21,52 +21,51 @@ function MyStack() {
   return (
     <CartProvider>
       <Stack.Navigator>
-      <Stack.Screen
-          name="Payment"
-          component={Payment}
-          options={{ title: "Payment" }}
-        />
-      <Stack.Screen
-          name="Lista"
+        <Stack.Screen
+          name='Lista'
           component={ListaAlimentos}
-          options={{ title: "Alimentos" }}
+          options={{ title: 'Alimentos' }}
         />
-
         <Stack.Screen
-          name="Inventario"
+          name='Payment'
+          component={Payment}
+          options={{ title: 'Payment' }}
+        />
+        <Stack.Screen
+          name='Inventario'
           component={Inventario}
-          options={{ title: "Inventario" }}
+          options={{ title: 'Inventario' }}
         />
         <Stack.Screen
-          name="Login"
+          name='Login'
           component={Login}
-          options={{ title: "Login" }}
+          options={{ title: 'Login' }}
         />
 
         <Stack.Screen
-          name="Crear"
+          name='Crear'
           component={CrearAlimento}
-          options={{ title: "Crear nuevo alimento" }}
+          options={{ title: 'Crear nuevo alimento' }}
         />
         <Stack.Screen
-          name="Detalle"
+          name='Detalle'
           component={DetallesAlimento}
-          options={{ title: "Detalles" }}
+          options={{ title: 'Detalles' }}
         />
         <Stack.Screen
-          name="Carrito"
+          name='Carrito'
           component={Carrito}
-          options={{ title: "Carrito" }}
+          options={{ title: 'Carrito' }}
         />
         <Stack.Screen
-          name="Alimento"
+          name='Alimento'
           component={Alimento}
-          options={{ title: "Alimento" }}
+          options={{ title: 'Alimento' }}
         />
         <Stack.Screen
-          name="Menu"
+          name='Menu'
           component={Menu}
-          options={{ title: "Menú" }}
+          options={{ title: 'Menú' }}
         />
       </Stack.Navigator>
     </CartProvider>
@@ -86,8 +85,8 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

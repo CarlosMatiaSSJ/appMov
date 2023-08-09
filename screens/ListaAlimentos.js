@@ -1,30 +1,30 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
+import { Text, Button, Menu } from 'react-native-paper';
 import {
+  View,
   Modal,
-  Portal,
-  Text,
-  Button,
-  Provider,
-  Divider,
-  Menu,
-} from "react-native-paper";
-import { View, TextInput, ScrollView, StyleSheet, Image } from "react-native";
-import { ListItem, Avatar } from "react-native-elements";
-import firebase from "firebase/compat/app";
-import "firebase/compat/auth";
-import "firebase/compat/firestore";
-import "firebase/compat/storage";
-import * as ImagePicker from "expo-image-picker";
+  TextInput,
+  StyleSheet,
+  Image,
+  Pressable,
+  VirtualizedList,
+  TouchableOpacity,
+} from 'react-native';
+import firebase from 'firebase/compat/app';
+import { Icon } from 'react-native-elements';
+import 'firebase/compat/auth';
+import 'firebase/compat/firestore';
+import 'firebase/compat/storage';
+import * as ImagePicker from 'expo-image-picker';
 
 const ListaAlimentos = (props) => {
-  //Firebase config
   const firebaseConfig = {
-    apiKey: "AIzaSyDqVK-WWN_J_Lfl8aLVBX-4RM-1E_auMMw",
-    authDomain: "poli-waiter.firebaseapp.com",
-    projectId: "poli-waiter",
-    storageBucket: "poli-waiter.appspot.com",
-    messagingSenderId: "17731923429",
-    appId: "1:17731923429:web:f2d120b0b38dd6584f130c",
+    apiKey: 'AIzaSyDqVK-WWN_J_Lfl8aLVBX-4RM-1E_auMMw',
+    authDomain: 'poli-waiter.firebaseapp.com',
+    projectId: 'poli-waiter',
+    storageBucket: 'poli-waiter.appspot.com',
+    messagingSenderId: '17731923429',
+    appId: '1:17731923429:web:f2d120b0b38dd6584f130c',
   };
 
   // Inicializar Firebase
@@ -34,12 +34,12 @@ const ListaAlimentos = (props) => {
   const db = firebase.firestore();
   const storage = firebase.storage();
 
-  // Estado para almacenar los datos del formulario
+  //Se obtienen los datos del formulario
   const [state, setState] = useState({
-    producto: "",
-    descripcion: "",
-    precioVenta: "",
-    cantidad: "",
+    producto: '',
+    descripcion: '',
+    precioVenta: '',
+    cantidad: '',
   });
 
   const handleChangeText = (name, value) => {
@@ -47,12 +47,11 @@ const ListaAlimentos = (props) => {
   };
 
   const [selectedImage, setSelectedImage] = useState(null);
-
   // Función para abrir el selector de imágenes
   const selectImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== "granted") {
-      alert("Permiso de acceso a la galería de fotos denegado");
+    if (status !== 'granted') {
+      alert('Permiso de acceso a la galería de fotos denegado');
       return;
     }
     const result = await ImagePicker.launchImageLibraryAsync();
@@ -84,7 +83,7 @@ const ListaAlimentos = (props) => {
 
       return imageUrl;
     } catch (error) {
-      console.error("Error al guardar la imagen:", error);
+      console.error('Error al guardar la imagen:', error);
       throw error;
     }
   };
@@ -93,15 +92,15 @@ const ListaAlimentos = (props) => {
   const saveData = async () => {
     try {
       // Verificar si ya existe un alimento con la misma descripción
-      const alimentosRef = db.collection("alimentos");
+      const alimentosRef = db.collection('alimentos');
       const querySnapshot = await alimentosRef
-        .where("descripcion", "==", state.descripcion)
+        .where('descripcion', '==', state.descripcion)
         .get();
 
       if (!querySnapshot.empty) {
         // Si se encuentra un alimento con la misma descripción, mostrar un mensaje de error
         alert(
-          "La descripción del producto ya existe. Por favor, ingresa una descripción diferente."
+          'La descripción del producto ya existe. Por favor, ingresa una descripción diferente.'
         );
         return;
       }
@@ -119,196 +118,305 @@ const ListaAlimentos = (props) => {
         imageUrl: imageUrl,
       });
 
-      alert("Producto agregado exitosamente!");
+      alert('Producto agregado exitosamente!');
       hideModal();
       setSelectedImage(null);
-      props.navigation.navigate("Lista");
+      props.navigation.navigate('Lista');
     } catch (error) {
-      console.error("Error al guardar los datos:", error);
+      console.error('Error al guardar los datos:', error);
       alert(
-        "Ocurrió un error al guardar los datos. Por favor, inténtalo nuevamente."
+        'Ocurrió un error al guardar los datos. Por favor, inténtalo nuevamente.'
       );
     }
   };
-
-  // Estado para almacenar la lista de alimentos
   const [alimentos, setAlimentos] = useState([]);
 
   useEffect(() => {
-    // Obtener la lista de alimentos desde Firestore
-    const unsubscribe = db
-      .collection("alimentos")
-      .onSnapshot((querySnapshot) => {
-        const alimentos = querySnapshot.docs.map((doc) => ({
+    db.collection('alimentos').onSnapshot((QuerySnapshot) => {
+      const alimentos = [];
+      QuerySnapshot.docs.forEach((doc) => {
+        const { producto, descripcion, precioVenta, cantidad } = doc.data();
+        alimentos.push({
           id: doc.id,
-          ...doc.data(),
-        }));
-        setAlimentos(alimentos);
+          producto,
+          descripcion,
+          precioVenta,
+          cantidad,
+        });
       });
 
-    return () => unsubscribe();
+      setAlimentos(alimentos);
+    });
   }, []);
 
-  // Estado para manejar la visibilidad del modal
-  const [visible, setVisible] = useState(false);
-
+  //Valores modal
+  const [menuVisible, setMenuVisible] = React.useState(false);
+  const [visible, setVisible] = React.useState(false);
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
+  const containerStyle = { backgroundColor: 'white', padding: 20 };
+
+  //Valores menú
+
+  const openMenu = () => setMenuVisible(true);
+
+  const closeMenu = () => setMenuVisible(false);
+
+  //VirtualizedList
+  const getItem = (_data, index) => ({
+    id: _data[index].id,
+    title: _data[index].producto,
+    description: _data[index].descripcion,
+    quantity: `Cantidad ${_data[index].cantidad}`,
+  });
+
+  const Item = ({ item }) => (
+    <TouchableOpacity
+      onPress={() =>
+        props.navigation.navigate('Detalle', {
+          alimentoId: item.id,
+        })
+      }
+    >
+      <View style={styles.item}>
+        <View style={styles.item.iconContainer}>
+          <Icon name='chevron-right' type='material' color='#000' size={24} />
+        </View>
+        <Text style={styles.item.title}>{item.title}</Text>
+        <Text style={styles.item.description}>{item.description}</Text>
+        <View style={styles.item.quantity}>
+          <Text style={styles.item.quantity.text}>{item.quantity}</Text>
+        </View>
+      </View>
+    </TouchableOpacity>
+  );
 
   return (
-    <Provider>
-      <View style={styles.container}>
-        <View
-          style={{
-            paddingTop: 0,
-            flexDirection: "row",
-            justifyContent: "center",
-          }}
-        >
+    <View style={styles.principalView}>
+      <Modal
+        animationType='fade'
+        transparent={true}
+        visible={visible}
+        onRequestClose={() => {
+          Alert.alert('Modal has been closed.');
+          setVisible(!visible);
+        }}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Pressable
+              style={[styles.button, styles.buttonClose]}
+              onPress={() => setVisible(!visible)}
+            >
+              <Text style={styles.buttonClose.Text}>X</Text>
+            </Pressable>
+            <TextInput
+              placeholder='Producto'
+              onChangeText={(value) => handleChangeText('producto', value)}
+              style={styles.textInput}
+            />
+            <TextInput
+              placeholder='Descripción'
+              onChangeText={(value) => handleChangeText('descripcion', value)}
+              style={styles.textInput}
+            />
+            <TextInput
+              placeholder='Precio de Venta'
+              onChangeText={(value) => handleChangeText('precioVenta', value)}
+              keyboardType='decimal-pad'
+              style={styles.textInput}
+            />
+            <TextInput
+              placeholder='Cantidad'
+              onChangeText={(value) => handleChangeText('cantidad', value)}
+              keyboardType='numeric'
+              style={styles.textInput}
+            />
+            <View>
+              {selectedImage && (
+                <Image
+                  source={{ uri: selectedImage }}
+                  style={{ width: 200, height: 200 }}
+                />
+              )}
+              <Button
+                style={{ backgroundColor: '#bdd1de', marginTop: 10 }}
+                theme={{ colors: { primary: 'black' } }}
+                mode='contained-tonal'
+                title='Seleccionar Imagen'
+                onPress={selectImage}
+              >
+                Subir imagen
+              </Button>
+            </View>
+
+            <View>
+              <Button
+                style={{
+                  backgroundColor: '#8ab3cf',
+                  marginTop: 10,
+                  marginBottom: 10,
+                }}
+                theme={{ colors: { primary: 'black' } }}
+                mode='contained-tonal'
+                onPress={() => saveData()} // Agrega los paréntesis para llamar a la función
+              >
+                Guardar
+              </Button>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      <Button
+        style={{ marginTop: 10, marginBottom: 10 }}
+        theme={{ colors: { primary: '#809BAD' } }}
+        mode='contained'
+        onPress={showModal}
+      >
+        Crear Alimento
+      </Button>
+      <VirtualizedList
+        data={alimentos}
+        renderItem={({ item }) => <Item item={item} />}
+        keyExtractor={(item) => item.id}
+        getItemCount={() => alimentos.length}
+        getItem={getItem}
+      />
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'center',
+        }}
+      >
+        <View style={styles.buttonMenu}>
           <Menu
-            theme={{ colors: { primary: "#18009C" } }}
             anchor={
-              <Button onPress={() => props.navigation.navigate("Menu")}>
+              <Button onPress={() => props.navigation.navigate('Menu')}>
                 Mostrar Menú
               </Button>
             }
           ></Menu>
         </View>
-        <View
-          style={{
-            paddingTop: 0,
-            flexDirection: "row",
-            justifyContent: "center",
-          }}
-        >
+        <View style={styles.buttonMenu}>
           <Menu
-            theme={{ colors: { primary: "#18009C" } }}
             anchor={
-              <Button onPress={() => props.navigation.navigate("Inventario")}>
+              <Button onPress={() => props.navigation.navigate('Inventario')}>
                 Mostrar Inventario
               </Button>
             }
           ></Menu>
         </View>
-        <Button
-          theme={{ colors: { primary: "#18009C" } }}
-          style={styles.button}
-          mode="contained"
-          onPress={showModal}
-        >
-          Crear Alimento
-        </Button>
-
-        <ScrollView>
-          {alimentos.map((alimento) => (
-            <ListItem
-              key={alimento.id}
-              bottomDivider
-              onPress={() =>
-                props.navigation.navigate("Detalle", {
-                  alimentoId: alimento.id,
-                })
-              }
-            >
-              <Avatar
-                size={32}
-                rounded
-                title="PW"
-                containerStyle={{ backgroundColor: "red" }}
-              />
-              <ListItem.Content>
-                <ListItem.Title>{alimento.producto}</ListItem.Title>
-                <ListItem.Subtitle>{alimento.descripcion}</ListItem.Subtitle>
-              </ListItem.Content>
-              <ListItem.Chevron />
-            </ListItem>
-          ))}
-        </ScrollView>
-
-        <Portal>
-          <Modal
-            visible={visible}
-            onDismiss={hideModal}
-            contentContainerStyle={styles.modalContainer}
-          >
-            <View style={styles.modalContent}>
-              <TextInput
-                style={styles.input}
-                placeholder="Producto"
-                onChangeText={(value) => handleChangeText("producto", value)}
-              />
-              <TextInput
-                style={styles.input}
-                placeholder="Descripción"
-                onChangeText={(value) => handleChangeText("descripcion", value)}
-              />
-              <TextInput
-                style={styles.input}
-                placeholder="Precio de Venta"
-                onChangeText={(value) => handleChangeText("precioVenta", value)}
-                keyboardType="decimal-pad"
-              />
-              <TextInput
-                style={styles.input}
-                placeholder="Cantidad"
-                onChangeText={(value) => handleChangeText("cantidad", value)}
-                keyboardType="numeric"
-              />
-              <Button
-                theme={{ colors: { primary: "#18009C" } }}
-                mode="outlined"
-                title="Seleccionar Imagen"
-                onPress={selectImage}
-              >
-                Seleccionar Imagen
+        <View style={styles.buttonMenu}>
+          <Menu
+            anchor={
+              <Button onPress={() => props.navigation.navigate('Payment')}>
+                Pagar
               </Button>
-              {selectedImage && (
-                <Image source={{ uri: selectedImage }} style={styles.image} />
-              )}
-              <Button
-                style={{ marginTop: 10, marginBottom: 10 }}
-                theme={{ colors: { primary: "#18009C" } }}
-                mode="contained"
-                onPress={saveData}
-              >
-                Guardar
-              </Button>
-            </View>
-          </Modal>
-        </Portal>
+            }
+          ></Menu>
+        </View>
       </View>
-    </Provider>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  principalView: {
     flex: 1,
-    padding: 20,
-    backgroundColor: "white",
+    backgroundColor: '#fff',
   },
-  button: {
-    marginTop: 10,
-    marginBottom: 10,
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+    backgroundColor: 'rgba(255, 255, 255, 0.6)',
   },
-  modalContainer: {
-    backgroundColor: "white",
-    padding: 20,
-    marginHorizontal: 40,
+  modalView: {
+    margin: 20,
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
-  modalContent: {
-    alignItems: "center",
-  },
-  input: {
-    width: "100%",
+
+  textInput: {
     marginBottom: 15,
     borderBottomWidth: 1,
-    borderBottomColor: "#cccccc",
+    borderBottomColor: '#809BAD',
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    color: '#000',
   },
-  image: {
-    width: 200,
-    height: 200,
+  buttonMenu: {
+    borderRadius: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
     marginVertical: 10,
+    alignSelf: 'center',
+    width: 200,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#F5F5F5',
+    background: 'linear-gradient(to right, #FFFFFF, #E3EDF9)',
+    boxShadow: '0px 2px 3px rgba(0, 0, 0, 0.3)',
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+  },
+  item: {
+    backgroundColor: '#fff',
+    padding: 10,
+    marginBottom: 10,
+    borderRadius: 10,
+    iconContainer: {
+      alignItems: 'flex-end',
+      top: '38%',
+    },
+    title: {
+      fontSize: 18,
+      fontWeight: 'bold',
+      marginBottom: 5,
+    },
+    description: {
+      fontSize: 14,
+      marginBottom: 5,
+    },
+    quantity: {
+      position: 'absolute',
+      top: 10,
+      right: 10,
+      fontSize: 16,
+      text: {
+        color: '#FF9700',
+        fontWeight: 'bold',
+      },
+    },
+  },
+  title: {
+    fontSize: 32,
+  },
+  buttonClose: {
+    backgroundColor: 'red',
+    position: 'absolute',
+    top: 0,
+    left: '65%',
+    marginTop: 10,
+    marginBottom: 10,
+    Text: {
+      color: 'white',
+      fontWeight: 'bold',
+    },
   },
 });
 
