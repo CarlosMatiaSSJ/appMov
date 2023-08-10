@@ -48,56 +48,10 @@ const Index = () => {
       </View>
 
       <View style={styles.suggestionsContainer}>
-        <Text style={styles.suggestionsTitle}>Recomendaciones</Text>
-
-        {/* First row of cards */}
-        <View style={styles.cardsContainer}>
-          <View style={styles.cardsRow}>
-            <TouchableWithoutFeedback
-              onPressIn={handleMouseEnter}
-              onPressOut={handleMouseLeave}
-            >
-              <View style={[styles.card, highlighted && styles.cardHighlighted]}>
-                <Image
-                  source={require('../imgs/logoAzul.png')}
-                  style={[styles.cardImage, { width: '90%', height: '90%' }]}
-                />
-                <Text style={styles.cardDescription}>Hot-Dogs</Text>
-              </View>
-            </TouchableWithoutFeedback>
-
-            <TouchableWithoutFeedback
-              onPressIn={handleMouseEnter}
-              onPressOut={handleMouseLeave}
-            >
-              <View style={[styles.card, highlighted && styles.cardHighlighted]}>
-                <Image
-                  source={require('../imgs/logoAzul.png')}
-                  style={[styles.cardImage, { width: '90%', height: '90%' }]}
-                />
-                <Text style={styles.cardDescription}>Tacos</Text>
-              </View>
-            </TouchableWithoutFeedback>
-
-            <TouchableWithoutFeedback
-              onPressIn={handleMouseEnter}
-              onPressOut={handleMouseLeave}
-            >
-              <View style={[styles.card, highlighted && styles.cardHighlighted]}>
-                <Image
-                  source={require('../imgs/logoAzul.png')}
-                  style={[styles.cardImage, { width: '90%', height: '90%' }]}
-                />
-                <Text style={styles.cardDescription}>Burritos</Text>
-              </View>
-            </TouchableWithoutFeedback>
-          </View>
-        </View>
+        <Text style={styles.suggestionsTitle}>Vistas</Text>
 
         {/* Second row of cards */}
         <View style={styles.cardsContainer}>
-        <View style={styles.suggestionsContainer}>
-        <Text style={styles.suggestionsTitle}>Vistas</Text>
           <View style={styles.cardsRow}>
             <View style={[styles.card, highlighted && styles.cardHighlighted]}>
               <Text style={styles.cardDescription}>Carrito</Text>
@@ -107,7 +61,7 @@ const Index = () => {
               />
               <TouchableWithoutFeedback onPress={() => alert('Botón 1 presionado')}>
                 <View>
-                  <Text>Botón 1</Text>
+                  <button> Carrito </button>
                 </View>
               </TouchableWithoutFeedback>
             </View>
@@ -120,7 +74,7 @@ const Index = () => {
               />
               <TouchableWithoutFeedback onPress={() => alert('Botón 2 presionado')}>
                 <View>
-                  <Text>Botón 2</Text>
+                  <button> Menú </button>
                 </View>
               </TouchableWithoutFeedback>
             </View>
@@ -133,14 +87,19 @@ const Index = () => {
               />
               <TouchableWithoutFeedback onPress={() => alert('Botón 3 presionado')}>
                 <View>
-                  <Text>Botón 3</Text>
+                  <button> Inicio </button>
                 </View>
               </TouchableWithoutFeedback>
             </View>
           </View>
         </View>
       </View>
-    </View>
+
+      {/* Footer */}
+      <View style={styles.footer}>
+        <Text style={styles.footerText}>Poli Waiter</Text>
+        <Text style={styles.footerCopyright}>© 2023</Text>
+      </View>
     </View>
   );
 };
@@ -211,6 +170,28 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: -22,
   },
+  footer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'blue',
+    paddingVertical: 10,
+  },
+  footerText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  footerCopyright: {
+    color: 'white',
+    fontSize: 16,
+    marginLeft: 10,
+  },
 });
 
 export default Index;
+
