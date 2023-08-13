@@ -1,26 +1,28 @@
-  import React, { useState } from 'react';
+  import React, { useState, useContext } from 'react';
   import { View, Button, Text } from 'react-native';
   import { StripeProvider, CardField, useStripe } from '@stripe/stripe-react-native';
   import axios from 'axios';
+  import CartContext from "./CartProvider";
 
   const Payment = (props) => {
     const [cardNumber, setCardNumber] = useState('');
     const [expMonth, setExpMonth] = useState('');
     const [expYear, setExpYear] = useState('');
     const [cvc, setCvc] = useState('');
-
+    const { clearCart } = useContext(CartContext);
     const { confirmPayment } = useStripe();
 
     const handlePayment = async () => {
       try {
         const response = await axios.post('http://localhost:3000/procesar-pago', {
           token: 'tok_visa', // El token de la tarjeta generado por Stripe en el frontend
-          amount: 1000, // Total en centavos (ejemplo: $10.00)
+          amount: $valorTotal*1000, // Total en centavos (ejemplo: $10.00)
           currency: 'mxn', // Divisa
         });
   
         // Pago exitoso
         alert('Pago realizado');
+        clearCart();
         props.navigation.navigate('Lista');
       } catch (error) {
         console.log('Error al procesar el pago:', error);
@@ -58,7 +60,7 @@
               setCvc(cvc);
             }}
           />
-          <Text>Total a pagar: $10</Text>
+          <Text>Total a pagar: {$valorTotal}</Text>
           <Button title="Pagar" onPress={handlePayment} />
         </View>
       </StripeProvider>

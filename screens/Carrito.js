@@ -3,7 +3,7 @@ import { DataTable, Button } from "react-native-paper";
 import { View, StyleSheet } from "react-native";
 import CartContext from "./CartProvider";
 
-const Carrito = () => {
+const Carrito = (props) => {
   const { cartItems, removeFromCart } = useContext(CartContext);
 
   const handleRemoveFromCart = (itemId, itemDescripcion) => {
@@ -18,6 +18,8 @@ const Carrito = () => {
     });
     return total;
   };
+
+  $valorTotal = calcularTotal();
 
   return (
     <View style={styles.container}>
@@ -48,6 +50,16 @@ const Carrito = () => {
           <DataTable.Cell>${calcularTotal()}</DataTable.Cell>
         </DataTable.Row>
       </DataTable>
+      <Button
+          onPress={()=>
+            props.navigation.navigate("Payment",{$valorTotal})
+          }
+          theme={{ colors: { primary: "#18009C" } }}
+          style={styles.button}
+          mode="contained"
+        >
+          Pagar
+        </Button>
     </View>
   );
 };
@@ -56,6 +68,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+  },
+  button: {
+    marginTop: 10,
+    marginBottom: 10,
   },
 });
 
