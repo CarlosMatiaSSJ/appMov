@@ -307,7 +307,7 @@ const ListaAlimentos = (props) => {
             }
           ></Menu>
         </View>
-        <View style={styles.buttonMenu}>
+        {/* <View style={styles.buttonMenu}>
           <Menu
             anchor={
               <Button onPress={() => props.navigation.navigate('Payment')}>
@@ -315,7 +315,7 @@ const ListaAlimentos = (props) => {
               </Button>
             }
           ></Menu>
-        </View>
+        </View> */}
       </View>
     </View>
   );
@@ -359,11 +359,8 @@ const styles = StyleSheet.create({
   },
   buttonMenu: {
     borderRadius: 10,
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    marginVertical: 10,
-    alignSelf: 'center',
-    width: 200,
+    marginBottom: '8%',
+    flexGrow: 1,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#F5F5F5',
