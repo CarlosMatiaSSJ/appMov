@@ -1,36 +1,32 @@
-import React, { useEffect, useState, useContext } from "react";
-import { useRoute } from "@react-navigation/native";
+import React, { useEffect, useState, useContext } from 'react';
+import { useRoute } from '@react-navigation/native';
+import { Card, FAB } from 'react-native-paper';
 import {
-  Modal,
-  Portal,
+  View,
+  TextInput,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
   Text,
-  Button,
-  PaperProvider,
-  Divider,
-  Avatar,
-  Card,
-  FAB,
-} from "react-native-paper";
-import { View, TextInput, ScrollView, StyleSheet } from "react-native";
-import { ListItem } from "react-native-elements";
+} from 'react-native';
+import { ListItem } from 'react-native-elements';
 // v9 compat packages are API compatible with v8 code3
-import firebase from "firebase/compat/app";
-import "firebase/compat/auth";
-import "firebase/compat/firestore";
-import "firebase/firestore";
-import { QuerySnapshot } from "firebase/firestore";
-import CartContext from "./CartProvider";
-
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
+import 'firebase/compat/firestore';
+import 'firebase/firestore';
+import { QuerySnapshot } from 'firebase/firestore';
+import CartContext from './CartProvider';
 
 const Alimento = () => {
   //Firebase config
   const firebaseConfig = {
-    apiKey: "AIzaSyDqVK-WWN_J_Lfl8aLVBX-4RM-1E_auMMw",
-    authDomain: "poli-waiter.firebaseapp.com",
-    projectId: "poli-waiter",
-    storageBucket: "poli-waiter.appspot.com",
-    messagingSenderId: "17731923429",
-    appId: "1:17731923429:web:f2d120b0b38dd6584f130c",
+    apiKey: 'AIzaSyDqVK-WWN_J_Lfl8aLVBX-4RM-1E_auMMw',
+    authDomain: 'poli-waiter.firebaseapp.com',
+    projectId: 'poli-waiter',
+    storageBucket: 'poli-waiter.appspot.com',
+    messagingSenderId: '17731923429',
+    appId: '1:17731923429:web:f2d120b0b38dd6584f130c',
   };
 
   firebase.initializeApp(firebaseConfig);
@@ -47,8 +43,8 @@ const Alimento = () => {
 
   useEffect(() => {
     // Realizar consulta a la colección "alimentos"
-    db.collection("alimentos")
-      .where("descripcion", "==", alimentoDescripcion)
+    db.collection('alimentos')
+      .where('descripcion', '==', alimentoDescripcion)
       .get()
       .then((querySnapshot) => {
         // Crear un array para almacenar los alimentos
@@ -65,7 +61,7 @@ const Alimento = () => {
       })
       .catch((error) => {
         // Manejar el error
-        console.log("Error al obtener los alimentos:", error);
+        console.log('Error al obtener los alimentos:', error);
       });
   }, []);
 
@@ -79,7 +75,7 @@ const Alimento = () => {
     };
     setIsCartVisible(true);
     addToCart(nuevoItem);
-    alert("Producto Agregado al carrito");
+    alert('Producto Agregado al carrito');
   };
 
   const handleCartPress = () => {
@@ -88,37 +84,27 @@ const Alimento = () => {
 
   return (
     <>
-      <ScrollView>
-        <View>
+      <ScrollView style={styles.scrollView}>
+        <View style={styles.container}>
           {alimentos.map((alimento, index) => (
-            <Card
-            key={index}
-              style={{
-                marginTop: 10,
-                marginBottom: 10,
-                backgroundColor: "#D0DDEF",
-              }}
-              mode="contained"
-            >
+            <Card key={index} style={styles.card}>
               <Card.Content>
-                <Text variant="titleLarge">{alimento.producto}</Text>
-                <Text variant="bodyMedium">{alimento.descripcion}</Text>
+                <Text style={styles.title}>{alimento.producto}</Text>
+                <Text style={styles.description}>{alimento.descripcion}</Text>
               </Card.Content>
               <Card.Cover
-                style={{ height: 500 }}
+                style={styles.image}
                 source={{ uri: alimento.imageUrl }}
               />
-              <TextInput style={styles.input} placeholder="Notas adicionales" />
-
-              <Card.Actions>
-                <Button
-                  theme={{ colors: { primary: "#18009C" } }}
-                  mode="contained"
+              <TextInput style={styles.input} placeholder='Notas adicionales' />
+              <View style={styles.buttonContainer}>
+                <TouchableOpacity
+                  style={styles.addButton}
                   onPress={() => agregarAlimentoAlCarrito(alimento)}
                 >
-                  Agregar al carrito
-                </Button>
-              </Card.Actions>
+                  <Text style={styles.buttonText}>Agregar al carrito</Text>
+                </TouchableOpacity>
+              </View>
             </Card>
           ))}
         </View>
@@ -126,52 +112,71 @@ const Alimento = () => {
       {isCartVisible && (
         <FAB
           style={styles.fab}
-          icon="cart"
+          icon='cart'
           onPress={handleCartPress}
-          color="white"
+          color='white'
         />
       )}
     </>
   );
 };
+
 const styles = StyleSheet.create({
-  fab: {
-    position: "absolute",
-    margin: 16,
-    right: 0,
-    bottom: 0,
-    backgroundColor: "#18009C",
+  scrollView: {
+    backgroundColor: 'white',
   },
   container: {
-    flex: 1,
     padding: 20,
-    backgroundColor: "white",
   },
-  button: {
+  card: {
     marginTop: 10,
     marginBottom: 10,
+    backgroundColor: '#D0DDEF',
   },
-  modalContainer: {
-    backgroundColor: "white",
-    padding: 20,
-    marginHorizontal: 40,
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 5,
   },
-  modalContent: {
-    alignItems: "center",
+  description: {
+    fontSize: 16,
+    marginBottom: 10,
+  },
+  image: {
+    height: 300,
+    resizeMode: 'cover',
   },
   input: {
     marginTop: 20,
-    width: "100%",
-    height: "10%",
     marginBottom: 15,
     borderBottomWidth: 1,
-    borderBottomColor: "#cccccc",
-    backgroundColor: "white",
+    borderBottomColor: '#cccccc',
+    backgroundColor: 'white',
+    paddingVertical: 10,
+    paddingHorizontal: 10,
   },
-  image: {
-    width: 200,
-    height: 200,
-    marginVertical: 10,
+  buttonContainer: {
+    marginTop: 10,
+    alignItems: 'center',
+  },
+  addButton: {
+    backgroundColor: '#71CEB4',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    marginBottom: 10,
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  fab: {
+    position: 'absolute',
+    margin: 16,
+    right: 0,
+    bottom: 0,
+    backgroundColor: '#18009C',
   },
 });
 

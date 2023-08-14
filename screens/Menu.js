@@ -33,7 +33,6 @@ const Menu = (props) => {
   const [carrito, setCarrito] = useState([]);
   const [isCartVisible, setIsCartVisible] = useState(true);
   const { cartItems, addToCart } = useContext(CartContext);
-
   useEffect(() => {
     db.collection('alimentos')
       .get()
@@ -52,86 +51,59 @@ const Menu = (props) => {
 
   //Agregar producto al carrito de compras
   const agregarAlimentoAlCarrito = (alimento) => {
-    const { id, producto, descripcion, precioVenta } = alimento;
-    const nuevoItem = {
-      id,
-      producto,
-      descripcion,
-      precioVenta,
-    };
+    const id = alimento.id;
+    const producto = alimento.title;
+    const descripcion = alimento.description;
+    const precioVenta = alimento.price;
+
+    const nuevoItem = { id, producto, descripcion, precioVenta };
     setIsCartVisible(true);
     addToCart(nuevoItem);
     alert('Producto Agregado al carrito');
   };
-  console.log(alimentos);
   //VirtualizedList
   const getItem = (_data, index) => ({
     id: _data[index].id,
     title: _data[index].producto,
     description: _data[index].descripcion,
     quantity: `Cantidad ${_data[index].cantidad}`,
+    price: _data[index].precioVenta,
     image: _data[index].imageUrl,
   });
 
   const Item = ({ item }) => (
-    <View
-      style={{
-        marginTop: 10,
-        marginBottom: 10,
-        backgroundColor: '#D0DDEF',
-        borderRadius: 8,
-        padding: 12,
-      }}
-    >
-      <View style={{ marginBottom: 12 }}>
-        <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{item.title}</Text>
-        <Text style={{ fontSize: 16 }}>{item.description}</Text>
+    <View style={styles.itemContainer}>
+      <View style={styles.itemTextContainer}>
+        <Text style={styles.itemTitle}>{item.title}</Text>
+        <Text style={styles.itemDescription}>{item.description}</Text>
       </View>
 
-      <Image
-        source={{ uri: item.image }}
-        style={{ width: '100%', height: 200, borderRadius: 8 }}
-      />
+      <Image source={{ uri: item.image }} style={styles.itemImage} />
 
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          marginTop: 12,
-        }}
-      >
+      <View style={styles.buttonContainer}>
         <TouchableOpacity
           onPress={() =>
             props.navigation.navigate('Alimento', {
               alimentoDescripcion: item.description,
             })
           }
-          style={{
-            backgroundColor: '#18009C',
-            paddingVertical: 8,
-            paddingHorizontal: 16,
-            borderRadius: 4,
-          }}
+          style={styles.viewButton}
         >
-          <Text style={{ color: 'white' }}>Ver</Text>
+          <Text style={styles.buttonText}>Ver</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           onPress={() => agregarAlimentoAlCarrito(item)}
-          style={{
-            backgroundColor: '#18009C',
-            paddingVertical: 8,
-            paddingHorizontal: 16,
-            borderRadius: 4,
-          }}
+          style={styles.addToCartButton}
         >
-          <Text style={{ color: 'white' }}>Agregar al carrito</Text>
+          <Text style={styles.buttonText}>Agregar al carrito</Text>
         </TouchableOpacity>
       </View>
     </View>
   );
+
   return (
-    <>
+    <View style={styles.container}>
       <VirtualizedList
         data={alimentos}
         renderItem={({ item }) => <Item item={item} />}
@@ -147,10 +119,62 @@ const Menu = (props) => {
           color='white'
         />
       )}
-    </>
+    </View>
   );
 };
+
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#E6F1F7', // Color de fondo pastel
+  },
+  itemContainer: {
+    marginVertical: 10,
+    marginHorizontal: 20,
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 12,
+    elevation: 3,
+  },
+  itemTextContainer: {
+    marginBottom: 12,
+  },
+  itemTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#18009C', // Título en azul oscuro
+  },
+  itemDescription: {
+    fontSize: 16,
+    color: '#333', // Descripción en gris oscuro
+  },
+  itemImage: {
+    width: '100%',
+    height: 200,
+    borderRadius: 12,
+    marginTop: 12,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 12,
+  },
+  viewButton: {
+    backgroundColor: '#6DA4D1', // Color llamativo suave para el botón "Ver"
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 4,
+  },
+  addToCartButton: {
+    backgroundColor: '#71CEB4', // Color llamativo para el botón "Agregar al carrito"
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 4,
+    marginLeft: 8,
+  },
+  buttonText: {
+    color: 'white',
+  },
   fab: {
     position: 'absolute',
     margin: 16,

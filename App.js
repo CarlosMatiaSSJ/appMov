@@ -21,11 +21,11 @@ function MyStack() {
   return (
     <CartProvider>
       <Stack.Navigator>
-        <Stack.Screen
+        {/* <Stack.Screen
           name='Lista'
           component={ListaAlimentos}
           options={{ title: 'Alimentos' }}
-        />
+        /> */}
         <Stack.Screen
           name='Payment'
           component={Payment}
@@ -66,11 +66,6 @@ function MyStack() {
           name='Menu'
           component={Menu}
           options={{ title: 'Menú' }}
-        />
-        <Stack.Screen
-          name="Payment"
-          component={Payment}
-          options={{ title: "Payment" }}
         />
       </Stack.Navigator>
     </CartProvider>
