@@ -67,6 +67,11 @@ function MyStack() {
           component={Menu}
           options={{ title: 'Menú' }}
         />
+        <Stack.Screen
+          name="Payment"
+          component={Payment}
+          options={{ title: "Payment" }}
+        />
       </Stack.Navigator>
     </CartProvider>
   );
